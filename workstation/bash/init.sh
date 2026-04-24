@@ -43,7 +43,7 @@ set_custom_shell_prompt () {
 }
 PROMPT_COMMAND=set_custom_shell_prompt
 
-export MANPAGER="vim +MANPAGER --not-a-term -"
+# export MANPAGER="vim +MANPAGER --not-a-term -"
 export BASE16_SHELL="$HOME/.config/bash/base16-shell/"
 [ -n "$PS1" ] && [ -s "$BASE16_SHELL/profile_helper.sh" ] && source "$BASE16_SHELL/profile_helper.sh"
 
@@ -72,12 +72,12 @@ vmf() {
 
 tmf() {
   local dir
-  dir=$(find $(realpath .) -maxdepth 3 -type d | fzf --preview "pwd; echo ''; ls -la {}" --preview-window=right) || return
+  dir=$(find $(realpath .) -maxdepth 5 -type d | fzf --preview "pwd; echo ''; ls -la {}" --preview-window=right) || return
   # tmux new-session -s "$(echo "$dir" | sed 's/\// /g' | awk '{print $(NF-1) "-" $NF}')" -c "$dir" || return
   tmux new-session -c "$dir" || return
 }
 
-function y() {
+y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
 	yazi "$@" --cwd-file="$tmp"
 	IFS= read -r -d '' cwd < "$tmp"
@@ -85,16 +85,18 @@ function y() {
 	rm -f -- "$tmp"
 }
 
-alias odump="objdump"
-alias v="nvim"
-alias tm="tmux"
-alias bat="batcat"
-alias lg="lazygit"
-alias gb="gobang"
+alias grep &>/dev/null || alias grep="grep --color=auto"
+alias diff &>/dev/null || alias diff="diff --color=auto"
+alias odump &>/dev/null || alias odump="objdump"
+alias v &>/dev/null || alias v="nvim"
+alias tm &>/dev/null || alias tm="tmux"
+alias bat &>/dev/null || alias bat="batcat"
+alias lg &>/dev/null || alias lg="lazygit"
+alias gb &>/dev/null || alias gb="gobang"
 
-alias rm="trash-put"
-alias rl="trash-list"
-alias trr="trash-restore"
-alias trm="trash-rm"
-alias tre="trash-empty"
+alias rm &>/dev/null || alias rm="trash-put"
+alias trl &>/dev/null || alias trl="trash-list"
+alias trr &>/dev/null || alias trr="trash-restore"
+alias trm &>/dev/null || alias trm="trash-rm"
+alias tre &>/dev/null || alias tre="trash-empty"
 

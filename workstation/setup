@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+apps_dirpath="$HOME/Documents/apps"
+
+set -x
+
+sudo apt update
+sudo apt install -y curl git tmux htop tree xxd \
+   ripgrep fd-find fzf jq \
+   ufw nmap tcpdump \
+   build-essential gdb nasm \
+   binutils-arm-none-eabi gdb-multiarch openocd stlink-tools \
+   qemu-system qemu-utils kicad
+
+mkdir -p $apps_dirpath
+
+# disable cups
+sudo systemctl stop cups || true
+sudo systemctl stop cups-browsed || true
+sudo systemctl disable cups || true
+sudo systemctl disable cups-browsed || true
+
+# firewall setup
+sudo ufw disable
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw deny 631
+sudo ufw enable
+sudo sed -i 's/^-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT/# &/' /etc/ufw/before.rules
+sudo ufw reload
+
+# gdb-dashboard setup
+wget -O "$HOME/.gdbinit" https://raw.githubusercontent.com/cyrus-and/gdb-dashboard/refs/heads/master/.gdbinit
+
+# yazi setup
+
+# nerdfonts setup
+
+# neovim install
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+sudo rm -rf /opt/nvim-linux-x86_64
+sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
+echo 'export PATH="$PATH:/opt/nvim-linux-x86_64/bin"' >> "$HOME/.bashrc"
+mv nvim-linux-x86_64.tar.gz $apps_dirpath
+
+# pyenv setup
+
+
+# rpi-imager setup
+rpi_imager_path="$HOME/.installed/rpi/rpi-imager-amd64.appimage"
+mkdir -p "$HOME/.installed/rpi"
+curl -LO https://downloads.raspberrypi.com/imager/imager_latest_amd64.AppImage
+mv imager_latest_amd64.AppImage $rpi_imager_path
+chmod +x $rpi_imager_path
+sudo ln -s $rpi_imager_path /usr/bin/rpi-imager
+
+# gns3 setup
+
+# stm32 setup
+
