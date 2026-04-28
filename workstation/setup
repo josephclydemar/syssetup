@@ -4,12 +4,13 @@ apps_dirpath="$HOME/Documents/apps"
 
 set -x
 
+sudo sed -i 's/http:/https:/g' /etc/apt/sources.list
 sudo apt update
 sudo apt install -y curl git tmux htop tree xxd \
-   ripgrep fd-find fzf jq \
+   ripgrep fd-find fzf jq trash-cli \
    ufw nmap tcpdump \
    build-essential gdb nasm \
-   binutils-arm-none-eabi gdb-multiarch openocd stlink-tools \
+   gcc-arm-none-eabi binutils-arm-none-eabi gdb-multiarch openocd stlink-tools \
    qemu-system qemu-utils kicad
 
 mkdir -p $apps_dirpath
@@ -29,12 +30,21 @@ sudo ufw enable
 sudo sed -i 's/^-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT/# &/' /etc/ufw/before.rules
 sudo ufw reload
 
+# nodejs setup
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+nvm install --lts
+
 # gdb-dashboard setup
 wget -O "$HOME/.gdbinit" https://raw.githubusercontent.com/cyrus-and/gdb-dashboard/refs/heads/master/.gdbinit
 
-# yazi setup
-
 # nerdfonts setup
+mkdir -p "$HOME/.local/share/fonts"
+wget -O "$apps_dirpath/fira-mono.zip" https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraMono.zip
+unzip "$apps_dirpath/fira-mono.zip" -d "$HOME/.local/share/fonts"
+fc-cache -fv
+
+# yazi setup
 
 # neovim install
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
@@ -57,4 +67,10 @@ sudo ln -s $rpi_imager_path /usr/bin/rpi-imager
 # gns3 setup
 
 # stm32 setup
+
+
+# 
+mv bash bat fzf git lazygit nvim tmux yazi "$HOME/.config"
+echo "source \$HOME/.config/bash/init.sh" >> "$HOME/.bashrc"
+source "$HOME/.bashrc"
 
